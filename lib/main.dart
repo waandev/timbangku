@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:timbangku/screens/splash/splash_screen.dart';
+import 'package:get/get.dart';
+import 'package:timbangku/routes/app_routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,10 +12,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'TimbangKu',
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      initialRoute: AppRoutes.initial,
+      onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 }

@@ -38,9 +38,9 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   _navigateToHomePage() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 4));
     _animationController.forward();
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 4));
     Get.offNamed('/login');
   }
 
