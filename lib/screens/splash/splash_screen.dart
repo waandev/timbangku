@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:timbangku/routes/app_routes.dart';
+import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -8,13 +8,40 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _opacityAnimation;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
-    });
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _navigateToHomePage();
+
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   Navigator.pushReplacementNamed(context, AppRoutes.home);
+    // });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  _navigateToHomePage() async {
+    await Future.delayed(const Duration(seconds: 2));
+    _animationController.forward();
+    await Future.delayed(const Duration(seconds: 2));
+    Get.offNamed('/login');
   }
 
   @override
@@ -63,17 +90,23 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
 
           // ---- Teks di Paling Bawah ----
-          const Positioned(
+          Positioned(
             bottom: 10,
             left: 0,
             right: 0,
-            child: Text(
-              'Developed by TIMBangKit',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 8,
-                color: Colors.white,
-                letterSpacing: 0.5,
+            child: AnimatedBuilder(
+              animation: _opacityAnimation,
+              builder: (context, child) {
+                return Opacity(opacity: _opacityAnimation.value, child: child);
+              },
+              child: Text(
+                'Developed by TIMBangKit',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 8,
+                  color: Colors.white,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ),
