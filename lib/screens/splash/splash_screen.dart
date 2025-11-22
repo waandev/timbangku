@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.dispose();
   }
 
-  _navigateToHomePage() async {
+  Future<void> _navigateToHomePage() async {
     await Future.delayed(const Duration(seconds: 4));
     _animationController.forward();
     await Future.delayed(const Duration(seconds: 4));
