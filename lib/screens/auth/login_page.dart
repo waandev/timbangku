@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../main/main_navigation.dart';
 import 'register_page.dart';
-import 'home_page.dart'; // ← pastikan ini benar
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,22 +13,22 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE9E4E4),
+      backgroundColor: const Color(0xFFE9E4E4),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // ICON ORANG
+              /// 🔹 Gambar Icon Orang
               Image.asset('assets/images/person.png', width: 140),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
-              // Username
-              Container(
+              /// 🔹 Username TextField
+              SizedBox(
                 width: 280,
                 child: TextField(
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person, color: Colors.orange),
+                    prefixIcon: const Icon(Icons.person, color: Colors.orange),
                     hintText: 'Username',
                     filled: true,
                     fillColor: Colors.white,
@@ -40,48 +40,52 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              // Password
-              Container(
+              /// 🔹 Password TextField
+              SizedBox(
                 width: 280,
-                margin: EdgeInsets.only(top: 20),
-                child: TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: Colors.orange),
-                    hintText: 'Password',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
+                child: Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.lock, color: Colors.orange),
+                      hintText: 'Password',
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-              // 🔹 LOGIN TANPA VALIDASI → langsung ke HomePage
-              Container(
+              /// 🔹 Tombol Login → Masuk ke Home (MainNavigation)
+              SizedBox(
                 width: 280,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(
+                        builder: (context) => const MainNavigation(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF128A4A),
+                    backgroundColor: const Color(0xFF128A4A),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 100,
                       vertical: 15,
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Login',
                     style: TextStyle(
                       color: Colors.white,
@@ -92,12 +96,12 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
 
-              // forgot password
+              /// 🔹 Forgot password
               TextButton(
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   'Forgot Password?',
                   style: TextStyle(
                     color: Color(0xFF272424),
@@ -106,21 +110,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
 
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-              // register link
+              /// 🔹 Register link
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Belum punya akun? "),
+                  const Text("Belum punya akun? "),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterPage()),
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ),
                       );
                     },
-                    child: Text(
+                    child: const Text(
                       'Register',
                       style: TextStyle(
                         color: Colors.orange,
