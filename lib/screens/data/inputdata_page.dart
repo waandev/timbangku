@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InputDataPage extends StatefulWidget {
-  final Map<String, dynamic>? existingData; // ← Data untuk EDIT
+  final Map<String, dynamic>? existingData; // null = tambah, ada = edit
 
   const InputDataPage({super.key, this.existingData});
 
@@ -10,14 +10,12 @@ class InputDataPage extends StatefulWidget {
 }
 
 class _InputDataPageState extends State<InputDataPage> {
-  // Controller untuk input form
   late TextEditingController namaController;
   late TextEditingController jkController;
   late TextEditingController ttlController;
   late TextEditingController usiaController;
   late TextEditingController alamatController;
 
-  // Nilai hasil (bisa dari sensor IoT)
   String tinggi = "-";
   String berat = "-";
   String bmi = "-";
@@ -26,8 +24,6 @@ class _InputDataPageState extends State<InputDataPage> {
   void initState() {
     super.initState();
 
-    /// Jika existingData == null → tambah data (form kosong)
-    /// Jika existingData berisi → edit data (form terisi otomatis)
     namaController = TextEditingController(
       text: widget.existingData?["nama"] ?? "",
     );
@@ -43,14 +39,17 @@ class _InputDataPageState extends State<InputDataPage> {
     alamatController = TextEditingController(
       text: widget.existingData?["alamat"] ?? "",
     );
+
+    /// Jika edit data → isi nilai tinggi/berat/bmi bila ada
+    tinggi = widget.existingData?["tinggi"] ?? "-";
+    berat = widget.existingData?["berat"] ?? "-";
+    bmi = widget.existingData?["bmi"] ?? "-";
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFE9E4E4),
-
-      /// 🔴 HEADER HIJAU
       appBar: AppBar(
         backgroundColor: const Color(0xFF128A4A),
         title: Text(
@@ -65,7 +64,7 @@ class _InputDataPageState extends State<InputDataPage> {
         child: Column(
           children: [
             // -----------------------------------------------------
-            // 🔶 FORM INPUT (CARD HIJAU)
+            // 🔶 FORM INPUT
             // -----------------------------------------------------
             Container(
               padding: const EdgeInsets.all(16),
@@ -85,22 +84,18 @@ class _InputDataPageState extends State<InputDataPage> {
                   ),
                   const SizedBox(height: 10),
 
-                  _buildInputRow(
-                    "Tempat Tanggal Lahir",
-                    "HH/BB/TT",
-                    ttlController,
-                  ),
+                  _buildInputRow("Tanggal Lahir", "HH/BB/TT", ttlController),
                   const SizedBox(height: 10),
 
-                  _buildInputRow("Usia sekarang", "Usia", usiaController),
+                  _buildInputRow("Usia", "Usia sekarang", usiaController),
                   const SizedBox(height: 10),
 
-                  _buildInputRow("Alamat", "Alamat", alamatController),
+                  _buildInputRow("Alamat", "Alamat lengkap", alamatController),
                   const SizedBox(height: 20),
 
                   ElevatedButton(
                     onPressed: () {
-                      // nanti dihubungkan ke sensor IoT
+                      // nanti ganti dengan sensor IoT
                       setState(() {
                         tinggi = "90 cm";
                         berat = "12 kg";
@@ -144,18 +139,17 @@ class _InputDataPageState extends State<InputDataPage> {
             ),
 
             const SizedBox(height: 10),
-
             _boxResult("Berat:\n$berat"),
 
             const SizedBox(height: 40),
 
             // -----------------------------------------------------
-            // 🔶 TOMBOL BAWAH
+            // 🔶 BUTTON SAVE / UPDATE
             // -----------------------------------------------------
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // KEMBALI
+                // 🔙 KEMBALI
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
                   style: ElevatedButton.styleFrom(
@@ -176,10 +170,9 @@ class _InputDataPageState extends State<InputDataPage> {
 
                 const SizedBox(width: 20),
 
-                // SAVE
+                // 💾 SAVE / UPDATE
                 ElevatedButton(
                   onPressed: () {
-                    // DATA YANG DIKIRIM
                     final newData = {
                       "nama": namaController.text,
                       "jk": jkController.text,
@@ -191,7 +184,7 @@ class _InputDataPageState extends State<InputDataPage> {
                       "bmi": bmi,
                     };
 
-                    Navigator.pop(context, newData); // ← kirim balik data
+                    Navigator.pop(context, newData);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
@@ -219,7 +212,7 @@ class _InputDataPageState extends State<InputDataPage> {
   }
 
   // ==========================================================
-  // 🔧 WIDGET INPUT (Label kiri + TextField kanan)
+  // 🔧 INPUT FIELD
   // ==========================================================
   Widget _buildInputRow(
     String label,
@@ -263,7 +256,7 @@ class _InputDataPageState extends State<InputDataPage> {
   }
 
   // ==========================================================
-  // 🔧 WIDGET BOX HASIL (Tinggi, Berat, BMI)
+  // 🔧 BOX HASIL PENGUKURAN
   // ==========================================================
   Widget _boxResult(String title, {double size = 150}) {
     return Container(

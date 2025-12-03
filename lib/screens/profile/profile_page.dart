@@ -8,9 +8,8 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFE9E4E4),
 
-      /// 🔹 AppBar Hijau (seperti di contoh gambar)
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0B7D1E),
+        backgroundColor: const Color(0xFF1C6B2C),
         title: const Text(
           "Profil",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -24,7 +23,7 @@ class ProfilePage extends StatelessWidget {
             children: [
               const SizedBox(height: 40),
 
-              /// 🔹 Foto / Icon Profile
+              /// Foto / Icon Profile
               Image.asset(
                 'assets/images/person.png',
                 width: 120,
@@ -33,56 +32,23 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 10),
 
+              /// Nama User
               const Text(
                 "Nama",
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-              ),
-
-              const SizedBox(height: 20),
-
-              /// 🔹 Tombol Edit Profile
-              SizedBox(
-                width: 150,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                  ),
-                  child: const Text(
-                    "Edit Profile",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 50),
-
-              /// 🔹 Menu Informasi Pribadi
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  "Informasi Pribadi",
-                  style: TextStyle(fontSize: 16, color: Colors.orange),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              /// 🔹 Menu Email
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  "Alamat Email",
-                  style: TextStyle(fontSize: 16, color: Colors.orange),
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
 
               const SizedBox(height: 40),
+
+              /// 🔹 Alamat Email (tetap ditampilkan)
+              const Text(
+                "Alamat Email",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.orange,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
