@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "243174690426",
+    "firebase_url": "https://timbang-6ce0e-default-rtdb.firebaseio.com",
+    "project_id": "timbang-6ce0e",
+    "storage_bucket": "timbang-6ce0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:243174690426:android:bbe20f89cf4bc980e235c3",
+        "android_client_info": {
+          "package_name": "com.example.timbangku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuK2zkfwMy5JZifmK33ovMwiNtcxZh-Vc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'detaildata_page.dart';
 import 'inputdata_page.dart';
 
@@ -10,12 +11,62 @@ class DataPage extends StatefulWidget {
 }
 
 class _DataPageState extends State<DataPage> {
-  // ====== DATA DUMMY ======
-  List<Map<String, String>> dataList = [
-    {"nama": "Ryan Hidayat", "tanggal": "10:35 / Rabu"},
-    {"nama": "A. Alfiansyah", "tanggal": "11:20 / Kamis"},
-    {"nama": "Fani Fanila", "tanggal": "09:50 / Senin"},
-  ];
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref(
+    'scale01/history',
+  );
+
+  List<Map<String, dynamic>> dataList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _listenData();
+  }
+
+  // ================= LISTEN DATA REALTIME =================
+  void _listenData() {
+    _dbRef.onValue.listen((event) {
+      final data = event.snapshot.value;
+      final List<Map<String, dynamic>> tempList = [];
+
+      print('SNAPSHOT => $data');
+
+      if (data == null) {
+        setState(() => dataList = []);
+        return;
+      }
+
+      // SUPPORT MAP
+      if (data is Map) {
+        data.forEach((key, value) {
+          if (value != null) {
+            tempList.add({
+              'id': key.toString(),
+              'nama': value['nama'] ?? '-',
+              'tanggal': value['tanggal'] ?? '-',
+            });
+          }
+        });
+      }
+      // SUPPORT LIST
+      else if (data is List) {
+        for (int i = 0; i < data.length; i++) {
+          final value = data[i];
+          if (value != null) {
+            tempList.add({
+              'id': i.toString(),
+              'nama': value['nama'] ?? '-',
+              'tanggal': value['tanggal'] ?? '-',
+            });
+          }
+        }
+      }
+
+      setState(() {
+        dataList = tempList.reversed.toList(); // data terbaru di atas
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,110 +99,114 @@ class _DataPageState extends State<DataPage> {
           Expanded(
             child: Container(
               color: Colors.white,
-              child: ListView.builder(
-                itemCount: dataList.length,
-                itemBuilder: (context, index) {
-                  final item = dataList[index];
-
-                  return GestureDetector(
-                    onTap: () {
-                      // TEKAN DATA → DetailDataPage
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => DetailDataPage(
-                            nama: item["nama"]!,
-                            tanggal: item["tanggal"]!,
-                          ),
-                        ),
-                      );
-                    },
-
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 14,
+              child: dataList.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "Belum ada data",
+                        style: TextStyle(color: Colors.grey),
                       ),
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Color(0xFFE0E0E0),
-                            width: 1,
-                          ),
-                        ),
-                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: dataList.length,
+                      itemBuilder: (context, index) {
+                        final item = dataList[index];
 
-                      child: Row(
-                        children: [
-                          // ================= NAMA =================
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              item["nama"]!,
-                              style: const TextStyle(fontSize: 14),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => DetailDataPage(
+                                  nama: item["nama"],
+                                  tanggal: item["tanggal"],
+                                ),
+                              ),
+                            );
+                          },
+
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 14,
                             ),
-                          ),
-
-                          // ================= TANGGAL =================
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              item["tanggal"]!,
-                              style: const TextStyle(fontSize: 14),
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Color(0xFFE0E0E0),
+                                  width: 1,
+                                ),
+                              ),
                             ),
-                          ),
 
-                          // ================= K E L O L A =================
-                          Expanded(
-                            flex: 2,
                             child: Row(
                               children: [
-                                // ====== EDIT → InputDataPage ======
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.orange,
+                                // ================= NAMA =================
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    item["nama"],
+                                    style: const TextStyle(fontSize: 14),
                                   ),
-                                  onPressed: () async {
-                                    final result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => InputDataPage(
-                                          existingData: item, // <<< FIX AMAN
-                                        ),
-                                      ),
-                                    );
-
-                                    if (result != null) {
-                                      setState(() {
-                                        dataList[index]["nama"] =
-                                            result["nama"];
-                                        dataList[index]["tanggal"] =
-                                            result["tanggal"];
-                                      });
-                                    }
-                                  },
                                 ),
 
-                                // ====== HAPUS ======
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
+                                // ================= TANGGAL =================
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    item["tanggal"],
+                                    style: const TextStyle(fontSize: 14),
                                   ),
-                                  onPressed: () {
-                                    _hapusData(index);
-                                  },
+                                ),
+
+                                // ================= KELOLA =================
+                                Expanded(
+                                  flex: 2,
+                                  child: Row(
+                                    children: [
+                                      // ===== EDIT =====
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.edit,
+                                          color: Colors.orange,
+                                        ),
+                                        onPressed: () async {
+                                          final result = await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => InputDataPage(
+                                                existingData: item,
+                                              ),
+                                            ),
+                                          );
+
+                                          if (result != null) {
+                                            _dbRef.child(item['id']).update({
+                                              'nama': result['nama'],
+                                              'tanggal': result['tanggal'],
+                                            });
+                                          }
+                                        },
+                                      ),
+
+                                      // ===== DELETE =====
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          _hapusData(item['id']);
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ),
 
@@ -161,8 +216,8 @@ class _DataPageState extends State<DataPage> {
     );
   }
 
-  // =================== FUNGSI HAPUS DATA ===================
-  void _hapusData(int index) {
+  // ================= HAPUS DATA =================
+  void _hapusData(String id) {
     showDialog(
       context: context,
       builder: (context) {
@@ -177,9 +232,7 @@ class _DataPageState extends State<DataPage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                setState(() {
-                  dataList.removeAt(index);
-                });
+                _dbRef.child(id).remove();
               },
               child: const Text("Hapus", style: TextStyle(color: Colors.red)),
             ),
